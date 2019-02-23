@@ -27,12 +27,17 @@ namespace SVN.Web.Parser
             return param.Content.FilterByObject(tag, attributePredicate);
         }
 
-        public static string GetValue(this List<HtmlAttribute> param, string key)
+        public static string GetAttributeValue(this HtmlContentObject param, string key)
+        {
+            return param.Attributes.GetAttributeValue(key);
+        }
+
+        public static string GetAttributeValue(this List<HtmlAttribute> param, string key)
         {
             return param.Where(x => x.Key == key).Select(x => x.Value).DefaultIfEmpty(string.Empty).First();
         }
 
-        public static string GetValue(this HtmlContentObject param)
+        public static string GetContentValue(this HtmlContentObject param)
         {
             return param.Childs.Select(x => x.ToString()).Join(string.Empty);
         }
