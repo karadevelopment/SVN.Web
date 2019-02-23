@@ -82,7 +82,7 @@
     <Compile Include="Parser\HtmlAttribute.cs" />
     <Compile Include="Parser\HtmlContentObject.cs" />
     <Compile Include="Parser\HtmlContentString.cs" />
-    <Compile Include="Parser\IHtmlContent.cs" />
+    <Compile Include="Parser\HtmlContent.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="nuget.nuspec" />

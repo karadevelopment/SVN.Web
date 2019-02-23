@@ -1,9 +1,8 @@
 ﻿namespace SVN.Web.Parser
 {
-    public class HtmlContentString : IHtmlContent
+    public class HtmlContentString : HtmlContent
     {
-        public IHtmlContent Parent { get; set; }
-        public string Content { get; internal set; }
+        internal string Content { get; set; }
 
         internal HtmlContentString()
         {

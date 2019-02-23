@@ -6,13 +6,12 @@ using System.Linq;
 
 namespace SVN.Web.Parser
 {
-    public class HtmlContentObject : IHtmlContent
+    public class HtmlContentObject : HtmlContent
     {
-        public IHtmlContent Parent { get; set; }
-        public List<IHtmlContent> Childs { get; } = new List<IHtmlContent>();
-        public HtmlContainer Container { get; internal set; }
-        public string Tag { get; internal set; }
-        public List<HtmlAttribute> Attributes { get; internal set; }
+        internal List<HtmlContent> Childs { get; } = new List<HtmlContent>();
+        internal HtmlContainer Container { get; set; }
+        internal string Tag { get; set; }
+        internal List<HtmlAttribute> Attributes { get; set; }
         internal bool IsStart { get; set; }
         internal bool IsEnd { get; set; }
 
@@ -20,7 +19,7 @@ namespace SVN.Web.Parser
         {
         }
 
-        public IEnumerable<IHtmlContent> Content
+        internal IEnumerable<HtmlContent> Content
         {
             get
             {
@@ -30,7 +29,7 @@ namespace SVN.Web.Parser
 
                     if (child is HtmlContentObject obj)
                     {
-                        foreach (var content in obj.Content)
+                        foreach (var content in obj.Content.ToList())
                         {
                             yield return content;
                         }
@@ -39,19 +38,30 @@ namespace SVN.Web.Parser
             }
         }
 
-        public string Format(Func<string, List<HtmlAttribute>, List<IHtmlContent>, string> formatter)
+        internal void AddChild(HtmlContent child)
+        {
+            child.Parent = this;
+            this.Childs.Add(child);
+        }
+
+        public bool HasAttribute(string key, string value = null)
+        {
+            return this.Attributes.Any(x => x.Key == key && (value is null || x.Value.Contains(value)));
+        }
+
+        public bool HasChilds()
+        {
+            return this.Childs.Any();
+        }
+
+        public string Format(Func<string, List<HtmlAttribute>, List<HtmlContent>, string> formatter)
         {
             return formatter(this.Tag, this.Attributes, this.Childs);
         }
 
-        public string FormatChilds()
-        {
-            return this.Format((tag, attributes, childs) => childs.Select(x => x.ToString()).Join(string.Empty));
-        }
-
         public override string ToString()
         {
-            return this.Format((tag, attributes, childs) => $"<{tag}{attributes.WhiteSpaceIfAny()}{attributes.Select(x => x.ToString()).Join(" ")}>");
+            return this.Format((tag, attributes, childs) => $"<{(this.IsEnd ? "/" : "")}{tag}{attributes.WhiteSpaceIfAny()}{attributes.Select(x => x.ToString()).Join(" ")}>");
         }
     }
 }

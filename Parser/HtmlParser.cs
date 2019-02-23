@@ -13,6 +13,11 @@ namespace SVN.Web.Parser
             "?",
             "meta",
             "link",
+            "hr",
+            "br",
+            "input",
+            "img",
+            "source",
         };
 
         private static IEnumerable<(string key, string value)> ParseAttributes(string line)
@@ -60,7 +65,7 @@ namespace SVN.Web.Parser
             }
         }
 
-        private static IHtmlContent ParseLine(HtmlContainer container, string line)
+        private static HtmlContent ParseLine(HtmlContainer container, string line)
         {
             if (line.Contains("<", ">"))
             {
@@ -112,7 +117,7 @@ namespace SVN.Web.Parser
             }
         }
 
-        private static IEnumerable<IHtmlContent> ParseAll(HtmlContainer container, string code)
+        private static IEnumerable<HtmlContent> ParseAll(HtmlContainer container, string code)
         {
             foreach (var line in code
                 .Remove("<script", "</script>")
