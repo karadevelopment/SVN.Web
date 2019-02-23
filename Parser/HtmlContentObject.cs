@@ -1,4 +1,6 @@
 ﻿using SVN.Core.Linq;
+using SVN.Core.String;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -37,9 +39,19 @@ namespace SVN.Web.Parser
             }
         }
 
+        public string Format(Func<string, List<HtmlAttribute>, List<IHtmlContent>, string> formatter)
+        {
+            return formatter(this.Tag, this.Attributes, this.Childs);
+        }
+
+        public string FormatChilds()
+        {
+            return this.Format((tag, attributes, childs) => childs.Select(x => x.ToString()).Join(string.Empty));
+        }
+
         public override string ToString()
         {
-            return $"<{this.Tag}{(this.Attributes.Any() ? " " : string.Empty)}{this.Attributes.Select(x => x.ToString()).Join(" ")}>";
+            return this.Format((tag, attributes, childs) => $"<{tag}{attributes.WhiteSpaceIfAny()}{attributes.Select(x => x.ToString()).Join(" ")}>");
         }
     }
 }

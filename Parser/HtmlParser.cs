@@ -22,12 +22,7 @@ namespace SVN.Web.Parser
                 var key = string.Empty;
                 var value = string.Empty;
 
-                var index = new List<int>
-                {
-                    line.IndexOf(' '),
-                    line.IndexOf('='),
-                    line.Length,
-                }.Select(x => x != -1 ? x : int.MaxValue).Min();
+                var index = line.NextIndex(' ', '=');
 
                 key = line.Copy(0, index).Trim();
                 line = line.TrimStart(index);
@@ -48,11 +43,7 @@ namespace SVN.Web.Parser
                     }
                     else
                     {
-                        index = new List<int>
-                        {
-                            line.IndexOf(" "),
-                            line.Length,
-                        }.Select(x => x != -1 ? x : int.MaxValue).Min();
+                        index = line.NextIndex(' ');
 
                         value = line.Substring(0, index).Trim();
                         line = line.Remove(0, index);
@@ -93,7 +84,7 @@ namespace SVN.Web.Parser
                 var attributes = HtmlParser.ParseAttributes(line).ToList();
                 var tag = attributes.Select(x => x.key).DefaultIfEmpty(string.Empty).First();
 
-                if (HtmlParser.SingleTags.Contains(tag.ToLower()))
+                if (HtmlParser.SingleTags.Any(x => tag.ToLower().Contains(x)))
                 {
                     isStart = true;
                     isEnd = true;
