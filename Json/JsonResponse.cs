@@ -60,6 +60,15 @@ namespace SVN.Web.Json
             };
         }
 
+        public static ContentResult CreateUnwrapped(object data)
+        {
+            return new ContentResult
+            {
+                Content = JsonConvert.SerializeObject(data),
+                ContentType = "application/json",
+            };
+        }
+
         public static ContentResult Redirect(string url)
         {
             var data = new
